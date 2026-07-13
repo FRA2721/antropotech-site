@@ -1607,11 +1607,38 @@ if (window.Lenis) {
 
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener('click', (e) => {
-    const target = document.querySelector(a.getAttribute('href'));
+    const hash = a.getAttribute('href');
+    const target = document.querySelector(hash);
     if (!target) return;
     e.preventDefault();
+    if (history.pushState) history.pushState(null, '', hash);
     if (lenis) lenis.scrollTo(target, { offset: -60 });
     else target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+/* scrollspy: aggiorna l'hash in tempo reale mentre si scorre tra le sezioni
+   (replaceState, non pushState, altrimenti ogni sezione attraversata
+   intaserebbe la cronologia del browser) */
+[
+  'il-libro-antropotech',
+  'le-30-leggi-universali',
+  'dal-libro-alla-pratica',
+  'camilla-brossa-autrice',
+  'per-chi-e-questo-libro',
+  'newsletter-antropotech',
+  'recensioni-lettori',
+].forEach((id, i) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top center',
+    end: 'bottom center',
+    onToggle: (self) => {
+      if (self.isActive) history.replaceState(null, '', '#' + id);
+      else if (i === 0 && self.direction === -1) history.replaceState(null, '', '#top');
+    },
   });
 });
 
