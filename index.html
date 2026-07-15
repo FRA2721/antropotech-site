@@ -101,49 +101,78 @@ button{font-family:inherit}
 /* ---------- nav ---------- */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;
   padding:22px clamp(20px,4vw,56px);
   transition:padding .5s ease,transform .45s cubic-bezier(.4,0,.2,1);
 }
-.nav.scrolled{padding-top:16px;padding-bottom:16px}
-.nav.nav-hidden{transform:translateY(-130%)}
-.nav-logo{font-family:var(--disp);font-size:16px;letter-spacing:.02em;color:var(--ink);text-transform:uppercase}
-.nav-logo em{
-  font-style:normal;background:var(--grad);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-/* blocco 2: pillola di vetro separata dal logo, contiene link + CTA */
-.nav-links{
-  display:flex;gap:30px;align-items:center;
-  font-family:var(--sans);font-size:13.5px;font-weight:400;
-  letter-spacing:.01em;color:var(--ink);
-  background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.22));
-  backdrop-filter:blur(28px) saturate(1.9);-webkit-backdrop-filter:blur(28px) saturate(1.9);
-  border-radius:100px;
-  padding:12px 8px 12px 26px;
+/* logo + voci + CTA uniti in un'unica barra liquid glass; le voci
+   restano centrate nella barra indipendentemente dalla larghezza di
+   logo e CTA (grid a 3 colonne, non flex space-between) */
+.nav-bar{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+  width:100%;border-radius:10px;
+  padding:10px 10px 10px 22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,.08));
+  backdrop-filter:blur(16px) saturate(1.9);-webkit-backdrop-filter:blur(16px) saturate(1.9);
   box-shadow:
     inset 0 1.5px 1px rgba(255,255,255,.95),
     inset 0 -12px 18px -10px rgba(16,16,16,.14),
     0 16px 44px rgba(16,16,16,.10);
   transition:background .5s ease,box-shadow .5s ease;
 }
-.nav.scrolled .nav-links{
-  background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.42));
+.nav.scrolled .nav-bar{
+  background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,.18));
   box-shadow:
     inset 0 1.5px 1px rgba(255,255,255,1),
     inset 0 -12px 18px -10px rgba(16,16,16,.16),
     0 18px 48px rgba(16,16,16,.12);
 }
+.nav.scrolled{padding-top:16px;padding-bottom:16px}
+.nav.nav-hidden{transform:translateY(-130%)}
+.nav-logo{
+  font-family:var(--disp);font-size:16px;letter-spacing:.02em;color:var(--ink);text-transform:uppercase;
+  display:inline-flex;align-items:center;justify-self:start;border-radius:8px;background:var(--bg);
+  padding:12px 16px;
+  box-shadow:
+    4px 4px 10px rgba(16,16,16,.28),
+    -4px -4px 10px rgba(255,255,255,.95);
+}
+.nav-logo em{
+  font-style:normal;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+/* blocco 2: pillola di vetro separata dal logo, contiene link + CTA
+   (colori originali; solo il border-radius segue il riferimento squircle) */
+/* voci scavate in un blocco unico, Acquista resta l'unico elemento in
+   rilievo dentro (stesso principio del footer: carved + un bottone raised) */
+.nav-links{
+  display:flex;gap:8px;align-items:center;justify-self:center;
+  font-family:var(--sans);font-size:13.5px;font-weight:400;
+  letter-spacing:.01em;color:var(--ink);
+  background:var(--bg);border-radius:8px;padding:6px;
+  box-shadow:
+    2px 2px 5px rgba(16,16,16,.16),
+    -2px -2px 4px rgba(255,255,255,.85);
+}
+.nav-item{display:inline-flex;align-items:center;justify-content:center;padding:9px 14px}
 /* hover "roll" a giro completo (guidato da JS: il ciclo si completa sempre) */
 .nav-links a.roll{display:inline-flex;align-items:flex-start;overflow:hidden;height:18px}
 .roll .l{display:inline-flex;flex-direction:column;will-change:transform}
 .roll .l span{display:block;height:18px;line-height:18px}
 .roll .l2{color:var(--magenta)}
 .nav-cta{
-  color:var(--dark-ink)!important;background:var(--ink);border-radius:100px;padding:11px 24px;
-  transition:box-shadow .35s ease,transform .35s ease;font-weight:700;
+  background:var(--bg);border-radius:6px;padding:12px 24px;justify-self:end;
+  box-shadow:
+    3px 3px 8px rgba(16,16,16,.18),
+    -3px -3px 8px rgba(255,255,255,.9);
+  transition:box-shadow .35s ease;font-weight:700;
 }
-.nav-cta:hover{box-shadow:0 8px 26px rgba(16,16,16,.3)}
+.nav-cta-txt{
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.nav-cta:hover{box-shadow:
+    4px 4px 10px rgba(16,16,16,.22),
+    -4px -4px 10px rgba(255,255,255,.95)}
 @media (max-width:1080px){.nav-links a:not(.nav-cta){display:none}}
 
 /* ---------- layout ---------- */
@@ -178,23 +207,25 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;text-transform
 .hero-copy .kicker{margin-bottom:30px}
 @media (max-width:980px){.hero-copy .kicker{justify-content:center}}
 .hero h1{
-  font-size:clamp(52px,8.4vw,138px);letter-spacing:-.01em;line-height:.94;color:var(--ink);
+  font-size:clamp(48px,7.7vw,126px);letter-spacing:-.01em;line-height:.94;color:var(--ink);
   text-align:center;width:fit-content;
+  text-shadow:-2px -2px 3px rgba(255,255,255,.9),3px 4px 6px rgba(16,16,16,.25);
 }
 .hero-sub{
   font-family:var(--mono);font-size:clamp(11px,1.3vw,14px);letter-spacing:.32em;
   text-transform:uppercase;color:var(--ink);margin-top:26px;
 }
+@media (min-width:981px){.hero-sub{display:inline-block;white-space:nowrap}}
 .hero-sub b{font-weight:400;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero-tag{
-  font-size:clamp(16px,1.7vw,20px);color:var(--dim);margin-top:22px;max-width:44ch;
+  font-size:clamp(15px,1.6vw,18px);color:var(--dim);margin-top:22px;max-width:none;white-space:nowrap;
 }
 .hero-tag b{color:var(--ink);font-weight:500}
-.hero-cta{display:flex;gap:16px;margin-top:42px;flex-wrap:wrap}
+.hero-cta{display:flex;gap:36px;margin-top:42px;flex-wrap:wrap}
 @media (max-width:980px){.hero-cta{justify-content:center}}
 .btn{
   font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.08em;
-  padding:17px 34px;border-radius:100px;display:inline-flex;align-items:center;gap:12px;
+  padding:17px 34px;border-radius:10px;display:inline-flex;align-items:center;gap:12px;
   cursor:pointer;border:none;will-change:transform;text-transform:uppercase;
   transition:box-shadow .35s ease,background .35s ease,color .35s ease,border-color .35s ease;
 }
@@ -212,15 +243,40 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;text-transform
    dello stesso elemento si accavallano se lo scroll arriva mentre l'entrata non e'
    ancora finita - da qui lo scatto verso il basso al primissimo scroll dopo il boot */
 .hero-book-scroll{position:relative;display:flex;align-items:center;justify-content:center}
+/* aura viva dietro il libro: la luce della copertina che respira e ruota
+   lentamente — solo hero (la sezione acquista ha il suo .buy-circle statico).
+   Tre strati sovrapposti e sfocati: nucleo che pulsa, corona conica che gira,
+   punto caldo che deriva. Anima solo transform (mai il filter blur) per restare fluida. */
 .hero-circle{
   position:absolute;width:min(560px,88vw);aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle at 38% 32%,var(--yellow),var(--orange) 34%,var(--magenta) 62%,var(--violet) 88%);
-  opacity:.9;filter:blur(34px);
+  opacity:.9;filter:blur(36px);
+  animation:auraBreathe 9s ease-in-out infinite;will-change:transform;
+}
+.hero-circle::before,.hero-circle::after{content:'';position:absolute;border-radius:50%;pointer-events:none}
+.hero-circle::before{
+  inset:-16%;
+  background:conic-gradient(from 90deg,var(--violet),var(--magenta),var(--orange),var(--yellow),var(--orange),var(--magenta),var(--violet));
+  filter:blur(48px);opacity:.42;
+  animation:auraSpin 26s linear infinite;
+}
+.hero-circle::after{
+  inset:6%;
+  background:radial-gradient(circle at 66% 70%,var(--magenta),transparent 58%);
+  filter:blur(38px);opacity:.5;
+  animation:auraDrift 12s ease-in-out infinite;
+}
+@keyframes auraBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes auraSpin{to{transform:rotate(360deg)}}
+@keyframes auraDrift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-7%,5%) scale(1.12)}}
+@media (prefers-reduced-motion:reduce){
+  .hero-circle,.hero-circle::before,.hero-circle::after{animation:none}
 }
 @keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-24px) rotate(1deg)}}
 
 .hb-stage{
   --hbw:min(320px,58vw); --hbh:calc(var(--hbw) * 1.564); --hbt:calc(var(--hbw) * 0.0633);
+  --hbb:0.75px; /* sormonto simmetrico: nasconde le cuciture agli angoli senza ingrossare la scatola */
   position:relative;width:var(--hbw);height:var(--hbh);
   perspective:1400px;
   cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
@@ -235,13 +291,13 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;text-transform
 .hb-front{width:var(--hbw);height:var(--hbh);transform:translateZ(calc(var(--hbt)/2))}
 .hb-back {width:var(--hbw);height:var(--hbh);transform:rotateY(180deg) translateZ(calc(var(--hbt)/2))}
 .hb-spine{
-  width:calc(var(--hbt) + 10px);height:var(--hbh);
-  left:calc(var(--hbw)/2 - var(--hbt)/2 - 5px);
+  width:calc(var(--hbt) + var(--hbb)*2);height:calc(var(--hbh) + var(--hbb)*2);
+  left:calc((var(--hbw) - var(--hbt))/2 - var(--hbb));top:calc(var(--hbb) * -1);
   transform:rotateY(-90deg) translateZ(calc(var(--hbw)/2));
   background:#fff;
   display:flex;flex-direction:column;align-items:center;
 }
-.hb-author-zone,.hb-pub-zone{width:100%;flex:1 1 0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hb-author-zone,.hb-pub-zone{position:relative;width:100%;flex:1 1 0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .hb-author{writing-mode:vertical-rl;font-size:9px;font-weight:700;letter-spacing:.9px;color:var(--ink);white-space:nowrap}
 .hb-grad{
   width:100%;flex:1 1 0;
@@ -249,21 +305,30 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;text-transform
   display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
 .hb-title{writing-mode:vertical-rl;font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:1.3px;color:#fff;white-space:nowrap}
-/* .hb-face img{width:100%;height:100%} ha piu' specificita' di una singola classe:
-   senza .hb-pub-zone davanti qui vince quella e stira il logo a riempire la zona */
-.hb-pub-zone .hb-pub-logo{height:18px;width:auto;max-width:none;transform:rotate(90deg);display:block}
+/* logo editore (come sul primo di copertina), ruotato sul dorso. Centrato in
+   modo ASSOLUTO sull'asse della zona (translate -50% + rotate), a filo con autore
+   e titolo. Il selettore DEVE avere due classi (.hb-pub-zone .hb-pub-logo): la
+   regola generica .hb-face img{width/height:100%} ha più specificità di una classe
+   singola e altrimenti stira/ritaglia il logo fino a farlo sparire. Il contenuto
+   del PNG è quasi centrato come riquadro, MA le lettere vere di "LIBRI D'IMPRESA"
+   (banda y 159–272, centro 215,5) stanno 60,5px sotto il centro del canvas 310 —
+   la torretta rossa e il ® in alto bilanciano il baricentro del riquadro. Quindi
+   centrare il riquadro lascia le lettere fuori asse: le riporto in colonna con
+   translateY(-19,5%) (= 60,5/310 dell'altezza, in %, così scala anche su mobile). */
+.hb-pub-zone .hb-pub-logo{position:absolute;top:50%;left:50%;height:18px;width:auto;max-width:none;object-fit:contain;transform:translate(-50%,-50%) rotate(90deg) translateY(-19.5%);display:block}
 .hb-pages{background:repeating-linear-gradient(90deg,#fdfdfc 0 1.6px,#e9e6df 1.6px 2.4px)}
 .hb-edge-fore{
-  width:calc(var(--hbt) + 10px);height:calc(var(--hbh) - 6px);top:3px;
-  left:calc(var(--hbw)/2 - var(--hbt)/2 - 5px);
-  transform:rotateY(90deg) translateZ(calc(var(--hbw)/2 - 1px));
+  width:calc(var(--hbt) + var(--hbb)*2);height:calc(var(--hbh) + var(--hbb)*2);top:calc(var(--hbb) * -1);
+  left:calc((var(--hbw) - var(--hbt))/2 - var(--hbb));
+  transform:rotateY(90deg) translateZ(calc(var(--hbw)/2));
 }
 .hb-edge-top,.hb-edge-bottom{
-  width:calc(var(--hbw) - 2px);height:var(--hbt);left:1px;top:calc(var(--hbh)/2 - var(--hbt)/2);
+  width:calc(var(--hbw) + var(--hbb)*2);height:calc(var(--hbt) + var(--hbb)*2);
+  left:calc(var(--hbb) * -1);top:calc((var(--hbh) - var(--hbt))/2 - var(--hbb));
   background:repeating-linear-gradient(0deg,#fdfdfc 0 1.6px,#e9e6df 1.6px 2.4px);
 }
-.hb-edge-top{transform:rotateX(90deg) translateZ(calc(var(--hbh)/2 - 1px))}
-.hb-edge-bottom{transform:rotateX(-90deg) translateZ(calc(var(--hbh)/2 - 1px))}
+.hb-edge-top{transform:rotateX(90deg) translateZ(calc(var(--hbh)/2))}
+.hb-edge-bottom{transform:rotateX(-90deg) translateZ(calc(var(--hbh)/2))}
 .hb-shadow{
   position:absolute;left:50%;bottom:-70px;width:calc(var(--hbw)*0.92);height:44px;
   transform:translateX(-50%);
@@ -614,7 +679,7 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;text-transform
    di andare a capo sulla parola finale */
 .forwho .section-head h2{font-size:clamp(26px,3.6vw,52px);max-width:none;white-space:nowrap}
 @media (max-width:640px){.forwho .section-head h2{white-space:normal}}
-.forwho .intro{color:var(--dim);font-size:16.5px;max-width:56ch;margin-bottom:70px;text-wrap:pretty}
+.forwho .intro{color:var(--dim);font-size:16.5px;max-width:none;white-space:nowrap;margin-bottom:70px}
 .forwho .intro b{
   font-weight:600;background:var(--grad);
   -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -633,19 +698,33 @@ h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.06;text-transform
   padding-top:6px;flex-shrink:0;font-style:normal;
 }
 .fw h3{font-size:17px;margin-bottom:8px;line-height:1.3}
-.fw p{color:var(--dim);font-size:14.5px;text-align:justify}
+.fw p{color:var(--dim);font-size:13.5px;line-height:1.55;text-align:center}
 
 /* ---------- testimonianze ---------- */
 .reviews{padding-top:140px;padding-bottom:120px}
 .rev{
-  border:1px solid var(--line);border-radius:22px;background:var(--panel);
+  position:relative;overflow:hidden;border-radius:22px;
+  border:1px solid rgba(255,255,255,.5);
+  background:linear-gradient(160deg,rgba(250,248,243,.92),rgba(250,248,243,.82));
+  backdrop-filter:blur(12px) saturate(1.35);-webkit-backdrop-filter:blur(12px) saturate(1.35);
   padding:34px 32px;display:flex;flex-direction:column;gap:16px;
 }
+/* riflesso liquido: un alone morbido in alto a sinistra, la "goccia di
+   luce" tipica del liquid glass — statico apposta, niente da animare */
+.rev::before{
+  content:'';position:absolute;top:-40%;left:-30%;width:75%;height:75%;z-index:0;
+  background:radial-gradient(circle,rgba(255,255,255,.35),transparent 70%);
+  pointer-events:none;
+}
+.rev>*{position:relative;z-index:1}
 .rev .stars{
   font-size:14px;letter-spacing:6px;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  background:linear-gradient(90deg,#A233E0 0%,#F0299E 25%,#FF2E4D 50%,#FF7A2E 75%,#FFD23D 100%);
+  background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.rev p{font-size:14.5px;line-height:1.62}
+.rev .stars i{font-style:normal}
+.rev .stars i{font-style:normal}
+.rev p{color:var(--ink);font-size:14.5px;line-height:1.5;text-align:justify}
 .rev .who{
   font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
   display:flex;flex-direction:column;gap:6px;
@@ -733,7 +812,7 @@ footer{
 .footer-card{
   position:relative;overflow:hidden;
   background:var(--dark);color:var(--dark-ink);border-radius:clamp(20px,3vw,40px);
-  padding:0 clamp(20px,4vw,56px);
+  padding:50px clamp(20px,4vw,56px) 50px;
 }
 /* aurora arcobaleno interattiva: mesh di bagliori colore-copertina fissi negli angoli */
 .footer-card::after{
@@ -989,6 +1068,166 @@ footer{
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
 }
+
+/* ============================================================
+   ESPERIMENTO: neumorphism su tutto il sito (draft, non nel sito reale)
+   Superfici piatte scavate/in rilievo, stesso --bg del pannello e del
+   fondo pagina. Esclusi di proposito: .dive-panel (vetro nel tuffo 3D,
+   concettualmente legato alla profondità, non una card piatta),
+   .nws-panel/.nws-canvas (pannello della newsletter, stesso motivo),
+   .cookie-banner/.cb-card (animazione di apertura cerchio→card già
+   calibrata al millisecondo, il neumorphism ne romperebbe i tempi).
+   ============================================================ */
+:root{ --panel:#F1EEE7; --dark-2:#19161C; }
+
+.btn-grad{background:var(--bg);color:var(--ink);
+  box-shadow:3px 3px 8px rgba(16,16,16,.18),-3px -3px 8px rgba(255,255,255,.9)}
+.btn-grad:hover{box-shadow:4px 4px 10px rgba(16,16,16,.22),-4px -4px 10px rgba(255,255,255,.95)}
+.btn-dark{box-shadow:3px 3px 8px rgba(0,0,0,.5),-2px -2px 6px rgba(255,255,255,.08)}
+.btn-dark:hover{box-shadow:4px 4px 10px rgba(0,0,0,.55),-2px -2px 6px rgba(255,255,255,.1)}
+.btn-ghost{border:none;background:var(--bg);
+  box-shadow:inset 2px 2px 5px rgba(16,16,16,.14),inset -2px -2px 4px rgba(255,255,255,.85)}
+.btn-ghost{background-image:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.btn-ghost:hover{border-color:transparent;
+  box-shadow:inset 3px 3px 6px rgba(16,16,16,.18),inset -3px -3px 5px rgba(255,255,255,.9)}
+
+.tcard{border:none;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;
+  box-shadow:8px 8px 20px rgba(16,16,16,.12),-8px -8px 20px rgba(255,255,255,.9)}
+.tcard:hover{border-color:transparent;
+  box-shadow:10px 10px 24px rgba(16,16,16,.15),-10px -10px 24px rgba(255,255,255,.95)}
+
+.author{border:none;box-shadow:14px 14px 34px rgba(16,16,16,.12),-14px -14px 34px rgba(255,255,255,.9)}
+
+.stats{background:var(--bg);border:none;gap:14px}
+.stat{border-radius:16px;
+  box-shadow:inset 3px 3px 7px rgba(16,16,16,.14),inset -3px -3px 6px rgba(255,255,255,.85)}
+
+.fw{border:none;background:var(--bg);
+  box-shadow:8px 8px 20px rgba(16,16,16,.1),-8px -8px 20px rgba(255,255,255,.88)}
+.fw:hover{border-color:transparent;transform:translateY(-4px);
+  box-shadow:10px 10px 24px rgba(16,16,16,.13),-10px -10px 24px rgba(255,255,255,.92)}
+
+.rev{border:none;background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none;
+  box-shadow:inset 6px 6px 14px rgba(16,16,16,.18),inset -6px -6px 14px rgba(255,255,255,.9)}
+.rev::before{display:none}
+.rev .who{border-top:1px solid rgba(16,16,16,.08);padding-top:16px;margin-top:auto}
+
+
+.photo-frame::before{background:var(--bg);opacity:1;
+  box-shadow:8px 8px 20px rgba(16,16,16,.15),-8px -8px 20px rgba(255,255,255,.9)}
+.photo-frame img{box-shadow:none}
+
+.term{box-shadow:14px 14px 34px rgba(0,0,0,.5),-10px -10px 30px rgba(255,255,255,.03)}
+.term-bar{background:rgba(255,255,255,.02);border-bottom:none;
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.05)}
+
+/* footer: torna al nero di prima, ma OGNI voce (link, cerchio CTA, bolla
+   social) ha lo stesso linguaggio scavato/in rilievo — versione scura
+   dello stesso effetto, non la superficie chiara del tentativo precedente */
+/* scavato sul blocco totale, ma scalato alla sua vera dimensione: offset/
+   blur piccoli (pensati per le pillole) su una superficie enorme restano
+   invisibili — qui serve profondità grande e morbida, non una crepa sottile */
+.footer-card{background:var(--dark-2);color:var(--dark-ink);
+  box-shadow:inset 18px 18px 36px rgba(0,0,0,.75),inset -14px -14px 32px rgba(255,255,255,.07)}
+.fb-c{
+  font-weight:700;background:var(--grad);-webkit-background-clip:text;
+  background-clip:text;color:transparent;
+}
+/* alone spento per adesso: toglieva contrasto al rilievo dei blocchi */
+.footer-card::after,.footer-card::before,
+.footer-card.glow-on::after,.footer-card.glow-on::before{opacity:0!important}
+/* "Resta umano." in rilievo: solo text-shadow, niente box/pillola
+   attorno (scritta originale intoccata, come richiesto in precedenza) */
+.mega-end h2 .stroke{text-shadow:-2px -2px 2px rgba(255,255,255,.14),3px 4px 6px rgba(0,0,0,.55)}
+.mega-end h2 .fill{text-shadow:-2px -2px 2px rgba(255,255,255,.16),3px 4px 6px rgba(0,0,0,.45)}
+.footer-word{
+  text-shadow:-2px -2px 2px rgba(255,255,255,.16),3px 4px 6px rgba(0,0,0,.45);
+  background:linear-gradient(115deg,#A233E0 0%,#F84CB4 42%,#FF7A4D 72%,#FFCB3D 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.footer-name{color:var(--dark-ink)}
+.fn-pill{
+  display:inline-flex;align-items:center;gap:16px;border-radius:20px;
+  background:var(--dark-2);padding:10px 22px;
+  box-shadow:4px 4px 10px rgba(0,0,0,.4),-3px -3px 8px rgba(255,255,255,.05);
+  text-shadow:0 -1px 0 rgba(255,255,255,.7),0 2px 2px rgba(0,0,0,.55),0 4px 8px rgba(0,0,0,.35);
+}
+/* pulsante verso il futuro sito di Camilla: nub in rilievo dentro la
+   pillola scavata* del nome, in attesa dello sviluppo del sito */
+.fn-site{
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  width:48px;height:48px;border-radius:20px;
+  background:var(--dark-2);padding:0;
+  font-size:20px;font-weight:400;text-shadow:none;color:#fff;
+  box-shadow:inset 3px 3px 7px rgba(0,0,0,.4),inset -2px -2px 6px rgba(255,255,255,.05);
+  transition:box-shadow .3s ease,transform .3s ease;
+}
+.fn-site:hover{box-shadow:inset 4px 4px 9px rgba(0,0,0,.45),inset -2px -2px 6px rgba(255,255,255,.06)}
+.fc-h{color:rgba(241,238,231,.35)}
+.footer-col a,.footer-social a{color:rgba(241,238,231,.75)}
+.footer-bottom{color:rgba(241,238,231,.5)}
+.circle-cta svg text{fill:rgba(241,238,231,.6)}
+/* ciambella in rilievo dietro al testo/freccia, come il riferimento */
+.circle-cta::before{
+  content:'';position:absolute;inset:0;z-index:0;border-radius:50%;
+  border:24px solid var(--dark-2);
+  box-shadow:
+    6px 6px 14px rgba(0,0,0,.5),-5px -5px 12px rgba(255,255,255,.04),
+    inset 6px 6px 14px rgba(0,0,0,.5),inset -5px -5px 12px rgba(255,255,255,.04);
+}
+.circle-cta svg{z-index:1}
+.circle-cta .arrow{position:relative;z-index:1;background:var(--dark-2);color:var(--dark-ink);
+  box-shadow:4px 4px 10px rgba(0,0,0,.4),-3px -3px 8px rgba(255,255,255,.04)}
+.circle-cta:hover .arrow{box-shadow:5px 5px 12px rgba(0,0,0,.45),-3px -3px 8px rgba(255,255,255,.05)}
+
+/* voci del footer scavate, stesso principio delle voci della nav (padding
+   sul contenitore, mai sull'<a> col roll: quello ha già height:18px fissa) */
+/* non più una capsula a link: un solo blocco scavato con dentro tutti
+   i link/titoli, testo semplice senza sfondo proprio */
+.footer-col,.footer-social{gap:8px}
+.footer-nav{
+  border-radius:20px;background:var(--dark-2);
+  padding:26px clamp(20px,3vw,34px);
+  box-shadow:inset 5px 5px 11px rgba(0,0,0,.45),inset -4px -4px 10px rgba(255,255,255,.04);
+}
+/* copyright resta a parte; tag+bottone uniti in un solo blocco scavato,
+   allineato via JS al bordo di footer-nav (vedi script più sotto) */
+.footer-bottom{justify-content:flex-start;gap:16px clamp(16px,3vw,32px)}
+.fb-copy{
+  display:inline-flex;align-items:center;border-radius:20px;
+  background:var(--dark-2);padding:15px 22px;
+  box-shadow:inset 3px 3px 7px rgba(0,0,0,.4),inset -3px -3px 6px rgba(255,255,255,.04);
+}
+.fb-merge{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+  border-radius:20px;background:var(--dark-2);padding:10px 22px;
+  box-shadow:inset 3px 3px 7px rgba(0,0,0,.4),inset -3px -3px 6px rgba(255,255,255,.04);
+}
+.fb-tag{display:inline-flex;align-items:center}
+/* il bottone dentro il blocco scavato resta l'unico elemento in rilievo */
+.fb-top{
+  display:inline-flex;align-items:center;border-radius:10px;
+  background:var(--dark-2);padding:9px 18px;
+  transition:box-shadow .3s ease,color .3s ease;
+  box-shadow:3px 3px 8px rgba(0,0,0,.4),-2px -2px 6px rgba(255,255,255,.05);
+}
+.fb-top:hover{box-shadow:4px 4px 10px rgba(0,0,0,.45),-2px -2px 6px rgba(255,255,255,.06)}
+@media (max-width:640px){.fb-copy,.fb-merge{width:fit-content}}
+
+
+/* blocco nero del footer come 2 widget in rilievo (non 3): mega-end resta
+   a sé, ma Antropotech + colonne + riga finale sono UN solo blocco unito
+   (.footer-block), ombra più marcata per leggere bene il rialzo */
+.mega-end,.footer-block{
+  background:var(--dark-2);border-radius:28px;
+  margin-bottom:50px;padding-left:clamp(20px,4vw,40px);padding-right:clamp(20px,4vw,40px);
+}
+.footer-block{padding-top:clamp(16px,2.5vw,40px);padding-bottom:8px;margin-bottom:0;
+  box-shadow:14px 14px 28px rgba(0,0,0,.5),-10px -10px 24px rgba(255,255,255,.08),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+/* mega-end scavato come la pillola tagline (foto 2), non più in rilievo */
+.mega-end{box-shadow:inset 6px 6px 14px rgba(0,0,0,.5),inset -5px -5px 12px rgba(255,255,255,.05)}
 </style>
 </head>
 <body>
@@ -1006,15 +1245,17 @@ footer{
 <canvas id="bg3d"></canvas>
 
 <nav class="nav" id="nav">
-  <a class="nav-logo" href="#top">ANTROPO<em>TECH</em></a>
-  <div class="nav-links">
-    <a href="#il-libro-antropotech">Il Libro</a>
-    <a href="#le-30-leggi-universali">30 Leggi</a>
-    <a href="#camilla-brossa-autrice">Camilla Brossa</a>
-    <a href="#per-chi-e-questo-libro">Per te</a>
-    <a href="#newsletter-antropotech">Newsletter</a>
-    <a href="#recensioni-lettori">Recensioni</a>
-    <a class="nav-cta" href="https://www.amazon.it/dp/B0GZ3T3MSP" target="_blank" rel="noopener" data-magnet>Acquista</a>
+  <div class="nav-bar">
+    <a class="nav-logo" href="#top">ANTROPO<em>TECH</em></a>
+    <div class="nav-links">
+      <span class="nav-item"><a href="#il-libro-antropotech">Il Libro</a></span>
+      <span class="nav-item"><a href="#le-30-leggi-universali">30 Leggi</a></span>
+      <span class="nav-item"><a href="#camilla-brossa-autrice">Camilla Brossa</a></span>
+      <span class="nav-item"><a href="#per-chi-e-questo-libro">Per te</a></span>
+      <span class="nav-item"><a href="#newsletter-antropotech">Newsletter</a></span>
+      <span class="nav-item"><a href="#recensioni-lettori">Recensioni</a></span>
+    </div>
+    <a class="nav-cta" href="https://www.amazon.it/dp/B0GZ3T3MSP" target="_blank" rel="noopener" data-magnet><span class="nav-cta-txt">Acquista</span></a>
   </div>
 </nav>
 
@@ -1029,7 +1270,7 @@ footer{
         <a class="btn btn-grad" href="https://www.amazon.it/dp/B0GZ3T3MSP" target="_blank" rel="noopener" data-magnet>Acquista il libro</a>
         <a class="btn btn-ghost" href="#il-libro-antropotech" data-magnet>Scopri di più</a>
       </div>
-      <p class="hero-tag" data-reveal>Un libro che unisce saggezza antica e tecnologia per creare un futuro consapevole.<br><b>In un mondo che cambia, resta umano.</b></p>
+      <p class="hero-tag" data-reveal>Unisce saggezza antica e tecnologia per creare un futuro consapevole.<br><b>In un mondo che cambia, resta umano.</b></p>
     </div>
     <div class="hero-book" data-reveal>
      <div class="hero-book-scroll">
@@ -1420,53 +1661,53 @@ footer{
     <div class="rev-gallery">
       <div class="rev-frames">
         <article class="rev rev-frame">
-          <span class="stars">★★★★★</span>
-          <p>«Bello, bello, bello. Mi è piaciuto moltissimo leggere questo libro, unico nel suo genere. Camilla raccoglie in un unico volume le 30 leggi universali, le descrive e le commenta con uno stile molto piacevole e scorrevole. Più che un volume da mettere nella libreria, è un manuale da tenere a portata di mano e da consultare in caso di bisogno.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Bello, bello, bello. Mi è piaciuto moltissimo leggere questo libro, unico nel suo genere. Camilla raccoglie in un unico volume le 30 leggi universali, le descrive e le commenta con uno stile molto piacevole e scorrevole. Più che un volume da mettere nella libreria, è un manuale da tenere a portata di mano e da consultare in caso di bisogno.</p>
           <span class="who">Barbara B.<b>Insegnante</b></span>
         </article>
         <article class="rev rev-frame">
-          <span class="stars">★★★★★</span>
-          <p>«Davvero illuminante. Ho letto Antropotech in un periodo particolare della mia vita e, in quelle pagine, ho trovato strumenti concreti per affrontare le mie giornate. Camilla, con un linguaggio semplice e chiaro, riesce davvero a darti gli strumenti per affrontare la quotidianità in modo diverso. Davvero super consigliato!»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Davvero illuminante. Ho letto Antropotech in un periodo particolare della mia vita e, in quelle pagine, ho trovato strumenti concreti per affrontare le mie giornate. Camilla, con un linguaggio semplice e chiaro, riesce davvero a darti gli strumenti per affrontare la quotidianità in modo diverso. Davvero super consigliato!</p>
           <span class="who">Elisa B.<b>Esperta di marketing</b></span>
         </article>
         <article class="rev rev-frame">
-          <span class="stars">★★★★★</span>
-          <p>«Antropotech è uno di quei libri che ti fanno fermare e riflettere. Permette di osservare le nostre scelte e modi di pensare partendo da angolazioni nuove e non usuali. L'autrice riesce a smontare l'idea che la tecnologia sia qualcosa di inumano: anche in un mondo sempre più tecnologico, al centro rimaniamo noi. È una lettura che non dà risposte definitive, ma lascia con domande interessanti e la voglia di trovare le <em>nostre</em> di risposte.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Antropotech è uno di quei libri che ti fanno fermare e riflettere. Permette di osservare le nostre scelte e modi di pensare partendo da angolazioni nuove e non usuali. L'autrice riesce a smontare l'idea che la tecnologia sia qualcosa di inumano: anche in un mondo sempre più tecnologico, al centro rimaniamo noi. È una lettura che non dà risposte definitive, ma lascia con domande interessanti e la voglia di trovare le <em>nostre</em> di risposte.</p>
           <span class="who">Giulia Ghiglione<b>Financial Advisor</b></span>
         </article>
         <article class="rev rev-frame">
-          <span class="stars">★★★★★</span>
-          <p>«Ho conosciuto Camilla sui social e poi di persona ormai un anno fa. Il caso — o molto più probabilmente un fortunato intreccio di Leggi Universali che descrive nel libro — ci ha portate a iniziare una di quelle conversazioni che non finiscono alla fine di un incontro. Leggere AntropoTech è stato esattamente questo: un incontro che non finisce quando sfogli l'ultima pagina, ma ti spinge a ricercare, a farti domande, a cambiare lo sguardo che hai su di te e sugli altri.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Ho conosciuto Camilla sui social e poi di persona ormai un anno fa. Il caso — o molto più probabilmente un fortunato intreccio di Leggi Universali che descrive nel libro — ci ha portate a iniziare una di quelle conversazioni che non finiscono alla fine di un incontro. Leggere AntropoTech è stato esattamente questo: un incontro che non finisce quando sfogli l'ultima pagina, ma ti spinge a ricercare, a farti domande, a cambiare lo sguardo che hai su di te e sugli altri.</p>
           <span class="who">Claudia Castellucci<b>Executive Coach</b></span>
         </article>
         <article class="rev rev-frame">
-          <span class="stars">★★★★★</span>
-          <p>«Antropotech rappresenta per me il manuale di tutte quelle sensazioni provate ma mai distintamente riconosciute, ora finalmente impresse nero su bianco. È la traduzione di quel "qualcosa mi dice che" che portiamo dentro tutti, ma che spesso non riusciamo a esprimere a parole, sommersi da un mondo rumoroso e saturo di distrazioni. Questo testo è un piccolo angolo di casa dove, ad accoglierci, non c'è uno sconosciuto, ma la versione più autentica di noi stessi.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Antropotech rappresenta per me il manuale di tutte quelle sensazioni provate ma mai distintamente riconosciute, ora finalmente impresse nero su bianco. È la traduzione di quel "qualcosa mi dice che" che portiamo dentro tutti, ma che spesso non riusciamo a esprimere a parole, sommersi da un mondo rumoroso e saturo di distrazioni. Questo testo è un piccolo angolo di casa dove, ad accoglierci, non c'è uno sconosciuto, ma la versione più autentica di noi stessi.</p>
           <span class="who">Violetta Zironi<b>Artista e attrice</b></span>
         </article>
         <article class="rev rev-frame" aria-hidden="true">
-          <span class="stars">★★★★★</span>
-          <p>«Bello, bello, bello. Mi è piaciuto moltissimo leggere questo libro, unico nel suo genere. Camilla raccoglie in un unico volume le 30 leggi universali, le descrive e le commenta con uno stile molto piacevole e scorrevole. Più che un volume da mettere nella libreria, è un manuale da tenere a portata di mano e da consultare in caso di bisogno.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Bello, bello, bello. Mi è piaciuto moltissimo leggere questo libro, unico nel suo genere. Camilla raccoglie in un unico volume le 30 leggi universali, le descrive e le commenta con uno stile molto piacevole e scorrevole. Più che un volume da mettere nella libreria, è un manuale da tenere a portata di mano e da consultare in caso di bisogno.</p>
           <span class="who">Barbara B.<b>Insegnante</b></span>
         </article>
         <article class="rev rev-frame" aria-hidden="true">
-          <span class="stars">★★★★★</span>
-          <p>«Davvero illuminante. Ho letto Antropotech in un periodo particolare della mia vita e, in quelle pagine, ho trovato strumenti concreti per affrontare le mie giornate. Camilla, con un linguaggio semplice e chiaro, riesce davvero a darti gli strumenti per affrontare la quotidianità in modo diverso. Davvero super consigliato!»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Davvero illuminante. Ho letto Antropotech in un periodo particolare della mia vita e, in quelle pagine, ho trovato strumenti concreti per affrontare le mie giornate. Camilla, con un linguaggio semplice e chiaro, riesce davvero a darti gli strumenti per affrontare la quotidianità in modo diverso. Davvero super consigliato!</p>
           <span class="who">Elisa B.<b>Esperta di marketing</b></span>
         </article>
         <article class="rev rev-frame" aria-hidden="true">
-          <span class="stars">★★★★★</span>
-          <p>«Antropotech è uno di quei libri che ti fanno fermare e riflettere. Permette di osservare le nostre scelte e modi di pensare partendo da angolazioni nuove e non usuali. L'autrice riesce a smontare l'idea che la tecnologia sia qualcosa di inumano: anche in un mondo sempre più tecnologico, al centro rimaniamo noi. È una lettura che non dà risposte definitive, ma lascia con domande interessanti e la voglia di trovare le <em>nostre</em> di risposte.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Antropotech è uno di quei libri che ti fanno fermare e riflettere. Permette di osservare le nostre scelte e modi di pensare partendo da angolazioni nuove e non usuali. L'autrice riesce a smontare l'idea che la tecnologia sia qualcosa di inumano: anche in un mondo sempre più tecnologico, al centro rimaniamo noi. È una lettura che non dà risposte definitive, ma lascia con domande interessanti e la voglia di trovare le <em>nostre</em> di risposte.</p>
           <span class="who">Giulia Ghiglione<b>Financial Advisor</b></span>
         </article>
         <article class="rev rev-frame" aria-hidden="true">
-          <span class="stars">★★★★★</span>
-          <p>«Ho conosciuto Camilla sui social e poi di persona ormai un anno fa. Il caso — o molto più probabilmente un fortunato intreccio di Leggi Universali che descrive nel libro — ci ha portate a iniziare una di quelle conversazioni che non finiscono alla fine di un incontro. Leggere AntropoTech è stato esattamente questo: un incontro che non finisce quando sfogli l'ultima pagina, ma ti spinge a ricercare, a farti domande, a cambiare lo sguardo che hai su di te e sugli altri.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Ho conosciuto Camilla sui social e poi di persona ormai un anno fa. Il caso — o molto più probabilmente un fortunato intreccio di Leggi Universali che descrive nel libro — ci ha portate a iniziare una di quelle conversazioni che non finiscono alla fine di un incontro. Leggere AntropoTech è stato esattamente questo: un incontro che non finisce quando sfogli l'ultima pagina, ma ti spinge a ricercare, a farti domande, a cambiare lo sguardo che hai su di te e sugli altri.</p>
           <span class="who">Claudia Castellucci<b>Executive Coach</b></span>
         </article>
         <article class="rev rev-frame" aria-hidden="true">
-          <span class="stars">★★★★★</span>
-          <p>«Antropotech rappresenta per me il manuale di tutte quelle sensazioni provate ma mai distintamente riconosciute, ora finalmente impresse nero su bianco. È la traduzione di quel "qualcosa mi dice che" che portiamo dentro tutti, ma che spesso non riusciamo a esprimere a parole, sommersi da un mondo rumoroso e saturo di distrazioni. Questo testo è un piccolo angolo di casa dove, ad accoglierci, non c'è uno sconosciuto, ma la versione più autentica di noi stessi.»</p>
+          <span class="stars"><i>★</i><i>★</i><i>★</i><i>★</i><i>★</i></span>
+          <p>Antropotech rappresenta per me il manuale di tutte quelle sensazioni provate ma mai distintamente riconosciute, ora finalmente impresse nero su bianco. È la traduzione di quel "qualcosa mi dice che" che portiamo dentro tutti, ma che spesso non riusciamo a esprimere a parole, sommersi da un mondo rumoroso e saturo di distrazioni. Questo testo è un piccolo angolo di casa dove, ad accoglierci, non c'è uno sconosciuto, ma la versione più autentica di noi stessi.</p>
           <span class="who">Violetta Zironi<b>Artista e attrice</b></span>
         </article>
       </div>
@@ -1483,59 +1724,63 @@ footer{
     <a class="circle-cta" data-magnet href="https://www.amazon.it/dp/B0GZ3T3MSP" target="_blank" rel="noopener">
       <svg viewBox="0 0 200 200" aria-hidden="true">
         <defs><path id="circPath" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>
-        <text><textPath href="#circPath">acquista il libro · antropotech · acquista il libro ·&nbsp;</textPath></text>
+        <text><textPath href="#circPath">acquista il libro &nbsp;&nbsp;·&nbsp;&nbsp; antropotech &nbsp;&nbsp;·&nbsp;&nbsp; acquista il libro &nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</textPath></text>
       </svg>
       <span class="arrow">→</span>
     </a>
   </section>
 
+  <div class="footer-block">
   <div class="footer-cta"><span class="footer-word">Antropotech</span></div>
   <div class="footer-cols">
-    <span class="footer-name">Camilla Brossa</span>
+    <span class="footer-name"><span class="fn-pill">Camilla Brossa<a class="fn-site" href="#" data-magnet title="Sito in arrivo">↗</a></span></span>
     <div class="footer-nav">
       <div class="footer-groups">
         <div class="footer-col">
           <span class="fc-h">Sito</span>
-          <a href="#il-libro-antropotech">Il Libro</a>
-          <a href="#le-30-leggi-universali">30 Leggi</a>
-          <a href="#camilla-brossa-autrice">Camilla Brossa</a>
-          <a href="#per-chi-e-questo-libro">Per te</a>
-          <a href="#newsletter-antropotech">Newsletter</a>
-          <a href="#recensioni-lettori">Recensioni</a>
+          <span class="fnav-item"><a href="#il-libro-antropotech">Il Libro</a></span>
+          <span class="fnav-item"><a href="#le-30-leggi-universali">30 Leggi</a></span>
+          <span class="fnav-item"><a href="#camilla-brossa-autrice">Camilla Brossa</a></span>
+          <span class="fnav-item"><a href="#per-chi-e-questo-libro">Per te</a></span>
+          <span class="fnav-item"><a href="#newsletter-antropotech">Newsletter</a></span>
+          <span class="fnav-item"><a href="#recensioni-lettori">Recensioni</a></span>
         </div>
         <div class="footer-col">
           <span class="fc-h">Legale</span>
-          <a href="legal-loading.html?to=privacy-policy.html">Privacy Policy</a>
-          <a href="legal-loading.html?to=cookie-policy.html">Cookie Policy</a>
-          <a href="legal-loading.html?to=termini-condizioni.html">Termini e Condizioni</a>
-          <a href="#" id="cookieManageLink">Gestisci cookie</a>
+          <span class="fnav-item"><a href="legal-loading.html?to=privacy-policy.html">Privacy Policy</a></span>
+          <span class="fnav-item"><a href="legal-loading.html?to=cookie-policy.html">Cookie Policy</a></span>
+          <span class="fnav-item"><a href="legal-loading.html?to=termini-condizioni.html">Termini e Condizioni</a></span>
+          <span class="fnav-item"><a href="#" id="cookieManageLink">Gestisci cookie</a></span>
         </div>
       </div>
       <div class="footer-social">
         <span class="fc-h">Piattaforma</span>
-        <a href="https://www.instagram.com/camillabrossa/" target="_blank" rel="noopener">
+        <span class="fnav-item"><a href="https://www.instagram.com/camillabrossa/" target="_blank" rel="noopener">
           <svg class="soc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           <span>Instagram</span>
-        </a>
-        <a href="https://www.linkedin.com/in/camillabrossa/" target="_blank" rel="noopener">
+        </a></span>
+        <span class="fnav-item"><a href="https://www.linkedin.com/in/camillabrossa/" target="_blank" rel="noopener">
           <svg class="soc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           <span>LinkedIn</span>
-        </a>
-        <a href="https://www.tiktok.com/@camilla.brossa" target="_blank" rel="noopener">
+        </a></span>
+        <span class="fnav-item"><a href="https://www.tiktok.com/@camilla.brossa" target="_blank" rel="noopener">
           <svg class="soc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82c-1.01-.88-1.6-2.15-1.6-3.55V2h-3.45v13.4a2.59 2.59 0 0 1-4.16 2.07 2.59 2.59 0 0 1 1.06-4.65 2.6 2.6 0 0 1 .69.09v-3.5a6.08 6.08 0 0 0-.69-.04A6.09 6.09 0 1 0 14.5 15.4V9.42a7.5 7.5 0 0 0 4.4 1.4V7.4a4.85 4.85 0 0 1-2.3-1.58z"/></svg>
           <span>TikTok</span>
-        </a>
-        <a href="https://substack.com/@antropotech" target="_blank" rel="noopener">
+        </a></span>
+        <span class="fnav-item"><a href="https://substack.com/@antropotech" target="_blank" rel="noopener">
           <svg class="soc-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 3.4h24v2.772H0V3.4zm0 5.4h24v2.772H0V8.8zm0 5.55v9.85L12 18.24 24 24.2v-9.85H0z"/></svg>
           <span>Substack</span>
-        </a>
+        </a></span>
       </div>
     </div>
   </div>
   <div class="footer-bottom">
-    <span class="fb-copy"><i class="fb-dot"></i>© <span id="fbYear">2026</span> by Camilla Brossa <span class="fb-dash">—</span> P.I. 04096920048</span>
-    <span class="fb-tag">in un mondo che cambia, resta umano</span>
-    <a class="fb-top" href="#top" data-magnet>Torna in cima ↑</a>
+    <span class="fb-copy"><span class="fb-c">©</span> <span id="fbYear">2026</span> by Camilla Brossa <span class="fb-dash">—</span> P.I. 04096920048</span>
+    <div class="fb-merge" id="fbMerge">
+      <span class="fb-tag">In un mondo che cambia, resta umano</span>
+      <a class="fb-top" href="#top" data-magnet>Torna in cima ↑</a>
+    </div>
+  </div>
   </div>
  </div>
 </footer>
@@ -2111,6 +2356,29 @@ let bootShowing = true;
     const baseY = H / 2 + 128 * 0.34;
     ctx.fillStyle = '#fff';
     ctx.fillText(partA + partB, startX, baseY);
+    /* la "i" di "is": sostituita da una minuscola figura umana (testa +
+       corpo che si allarga leggermente in basso, come gambe accennate) —
+       resta nell'area colorata a gradiente di "is you", nessun cambio alla
+       logica di colore sotto */
+    const iW = ctx.measureText('i').width;
+    const iX0 = startX + wA;
+    const iCx = iX0 + iW / 2;
+    const stemTop = baseY - 128 * 0.70, stemBot = baseY;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(iX0 - 2, 0, iW + 4, H);
+    ctx.fillStyle = '#fff';
+    const headR = iW * 0.46;
+    const headCy = stemTop + headR * 1.05;
+    ctx.beginPath(); ctx.arc(iCx, headCy, headR, 0, Math.PI * 2); ctx.fill();
+    const bodyTop = headCy + headR * 1.1;
+    const wTop = iW * 0.34, wBot = iW * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(iCx - wTop, bodyTop);
+    ctx.lineTo(iCx + wTop, bodyTop);
+    ctx.lineTo(iCx + wBot, stemBot);
+    ctx.lineTo(iCx - wBot, stemBot);
+    ctx.closePath();
+    ctx.fill();
     const img = ctx.getImageData(0, 0, W, H).data;
     const cdf = new Float32Array(W * H);
     let acc = 0;
@@ -2879,10 +3147,32 @@ addEventListener('resize', syncHeroCtaWidth);
 addEventListener('load', syncHeroCtaWidth);
 syncHeroCtaWidth();
 
+// hero-sub: "Tecnologico" deve finire dove finisce "ANTROPO", ma su una
+// riga sola — non si può restringere la larghezza (andrebbe a capo),
+// quindi si scala il font-size finché la larghezza naturale (single-line)
+// non combacia esattamente con quella del titolo (stesso principio del
+// fit della scritta "Antropotech" nel footer)
+const heroSub = document.querySelector('.hero-sub');
+function fitHeroSub() {
+  if (!heroSub || !heroTitle) return;
+  if (matchMedia('(max-width:980px)').matches) { heroSub.style.fontSize = ''; return; }
+  const target = heroTitle.getBoundingClientRect().width;
+  if (target <= 0) return;
+  heroSub.style.fontSize = '20px';
+  const natural = heroSub.getBoundingClientRect().width;
+  if (natural > 0) heroSub.style.fontSize = (20 * target / natural) + 'px';
+}
+fitHeroSub();
+addEventListener('resize', fitHeroSub);
+addEventListener('load', fitHeroSub);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeroSub);
+
+
 function heroIntro() {
   bootShowing = false;
   document.dispatchEvent(new Event('at:intro-done'));
   gsap.to(heroTitle, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out' });
+  gsap.fromTo('.hero-circle', { opacity: 0 }, { opacity: 0.9, duration: 1.8, ease: 'power2.out', delay: 0.15 });
   gsap.fromTo('.hero [data-reveal]',
     { y: 40, opacity: 0 },
     { y: 0, opacity: 1, duration: 1, stagger: 0.13, delay: 0.35, ease: 'power3.out' });
@@ -3502,6 +3792,63 @@ gsap.utils.toArray('[data-decode]').forEach((el) => {
   }
 }
 
+/* footer: il blocco "in un mondo che cambia / torna in cima" allineato
+   al bordo sinistro di footer-nav (dove inizia "SITO") — footer-nav è
+   ancorato a destra quindi la sua posizione non è un valore fisso, va
+   misurata (stesso principio della "Antropotech" sopra) */
+{
+  const fbMerge = document.getElementById('fbMerge');
+  const fNav = document.querySelector('.footer-nav');
+  if (fbMerge && fNav) {
+    const mergeWide = matchMedia('(min-width:641px)');
+    const alignFbMerge = () => {
+      if (!mergeWide.matches) { fbMerge.style.marginLeft = ''; fbMerge.style.width = ''; return; }
+      fbMerge.style.marginLeft = '0px';
+      fbMerge.style.width = '';
+      const navRect = fNav.getBoundingClientRect();
+      const delta = navRect.left - fbMerge.getBoundingClientRect().left;
+      fbMerge.style.marginLeft = Math.max(0, delta) + 'px';
+      fbMerge.style.width = navRect.width + 'px';
+    };
+    alignFbMerge();
+    addEventListener('resize', alignFbMerge);
+    addEventListener('load', alignFbMerge);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(alignFbMerge);
+    if (window.ResizeObserver) {
+      let raf3 = 0;
+      const scheduleAlign = () => { cancelAnimationFrame(raf3); raf3 = requestAnimationFrame(alignFbMerge); };
+      new ResizeObserver(scheduleAlign).observe(fNav);
+    }
+  }
+}
+
+/* footer: la pillola "Camilla Brossa" si estende finché il suo bordo
+   destro non arriva in linea col bordo destro della pillola copyright
+   sotto (stesso principio delle altre misure dinamiche del footer) */
+{
+  const fnPill = document.querySelector('.fn-pill');
+  const fbCopy = document.querySelector('.fb-copy');
+  if (fnPill && fbCopy) {
+    const pillWide = matchMedia('(min-width:641px)');
+    const extendFnPill = () => {
+      if (!pillWide.matches) { fnPill.style.width = ''; fnPill.style.justifyContent = ''; return; }
+      fnPill.style.width = '';
+      const target = fbCopy.getBoundingClientRect().right - fnPill.getBoundingClientRect().left;
+      if (target > 0) fnPill.style.width = target + 'px';
+      fnPill.style.justifyContent = 'space-between';
+    };
+    extendFnPill();
+    addEventListener('resize', extendFnPill);
+    addEventListener('load', extendFnPill);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(extendFnPill);
+    if (window.ResizeObserver) {
+      let raf4 = 0;
+      const scheduleExtend = () => { cancelAnimationFrame(raf4); raf4 = requestAnimationFrame(extendFnPill); };
+      new ResizeObserver(scheduleExtend).observe(fbCopy);
+    }
+  }
+}
+
 /* footer: anno del copyright sempre aggiornato */
 {
   const fbYear = document.getElementById('fbYear');
@@ -4105,7 +4452,7 @@ function initHbBook(stageId, bookId) {
       let blur = 0;
       if (f.classList.contains('hb-front') || f.classList.contains('hb-back')) {
         const camFacing = Math.abs(Math.cos(rad(visualAngle + n)));
-        blur = Math.max(0, (0.22 - camFacing) / 0.22) * 7;
+        blur = Math.max(0, (0.14 - camFacing) / 0.14) * 3;
       }
       f.style.filter = `brightness(${Math.min(b, 1.05).toFixed(3)}) blur(${blur.toFixed(2)}px)`;
     }
@@ -4136,12 +4483,15 @@ initHbBook('buyBookStage', 'buyBookInner');
 })();
 
 /* ---------- cookie banner: solo informativo, nessun cookie non tecnico da consentire.
-   Compare ad ogni accesso al sito (nessuna memoria tra sessioni, per scelta esplicita). ---------- */
+   Compare solo alla prima visita: una volta cliccato "Ho capito" resta
+   chiuso nelle visite successive (localStorage). "Gestisci cookie" lo
+   riapre sempre, a prescindere dalla scelta salvata. ---------- */
 (() => {
   const banner = document.getElementById('cookieBanner');
   const okBtn = document.getElementById('cookieBannerOk');
   const manageLink = document.getElementById('cookieManageLink');
   if (!banner || !okBtn) return;
+  const CONSENT_KEY = 'at-cookie-consent';
 
   function show() {
     banner.classList.remove('closing');
@@ -4153,8 +4503,16 @@ initHbBook('buyBookStage', 'buyBookInner');
     setTimeout(() => banner.classList.remove('closing'), 2050);
   }
 
-  document.addEventListener('at:intro-done', () => { setTimeout(show, 700); }, { once: true });
-  okBtn.addEventListener('click', hide);
+  document.addEventListener('at:intro-done', () => {
+    let consented = false;
+    try { consented = localStorage.getItem(CONSENT_KEY) === 'ok'; } catch (e) {}
+    if (!consented) setTimeout(show, 700);
+  }, { once: true });
+
+  okBtn.addEventListener('click', () => {
+    try { localStorage.setItem(CONSENT_KEY, 'ok'); } catch (e) {}
+    hide();
+  });
   if (manageLink) {
     manageLink.addEventListener('click', (e) => {
       e.preventDefault();
